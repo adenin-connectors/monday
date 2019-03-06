@@ -1,0 +1,8 @@
+ServiceName: 'unreadfeeds-status'
+InterfaceName: 'status'
+Description: 'My Feed Status'
+APIDoc: ''
+Interfaces: 'search,pagination'
+RequiredScopes: ''
+AdditionalParameters:
+Method: ''
