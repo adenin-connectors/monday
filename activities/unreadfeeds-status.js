@@ -1,56 +1,50 @@
 'use strict';
-
-const cfActivity = require('@adenin/cf-activity');
 const api = require('./common/api');
 
 module.exports = async function (activity) {
 
   try {
-    api.initialize(activity);
     const allUsers = await api(`/users.json`);
 
-    if (!cfActivity.isResponseOk(activity, allUsers)) {
-      return;
-    }
+    if (Activity.isErrorResponse(allUsers)) return;
 
     let currentUser = getCurrentUser(activity.Context.UserEmail, allUsers);
 
     const unreadFeeds = await api(`/users/${currentUser.id}/unread_feed.json`);
 
-    if (!cfActivity.isResponseOk(activity, unreadFeeds)) {
-      return;
-    }
+    if (Activity.isErrorResponse(unreadFeeds)) return;
 
     let feeds = [];
     feeds = unreadFeeds.body;
 
     let feedsStatus = {
-      title: 'Unread Feeds',
-      url: currentUser.url,
-      urlLabel: 'All feeds',
+      title: T('Unread Feeds'),
+      link: currentUser.url,
+      linkLabel: T('All Feeds'),
     };
 
-    let ureadFeedsCount = feeds.length;
+    let unreadFeedsCount = feeds.length;
 
-    if (ureadFeedsCount != 0) {
+    if (unreadFeedsCount != 0) {
       feedsStatus = {
         ...feedsStatus,
-        description: `You have ${ureadFeedsCount > 1 ? ureadFeedsCount + "unread feeds" : ureadFeedsCount + " unread feed"}.`,
+        description: unreadFeedsCount > 1 ? T("You have {0} unread feeds.", unreadFeedsCount)
+          : T("You have 1 unread feed."),
         color: 'blue',
-        value: ureadFeedsCount,
+        value: unreadFeedsCount,
         actionable: true
       };
     } else {
       feedsStatus = {
         ...feedsStatus,
-        description: `You have no unread feeds.`,
+        description: T(`You have no unread feeds.`),
         actionable: false
       };
     }
 
     activity.Response.Data = feedsStatus;
   } catch (error) {
-    cfActivity.handleError(activity, error);
+    Activity.handleError(error);
   }
 };
 //**comapares email address of the users with activity.Context.UserEmail and returns current user*/
