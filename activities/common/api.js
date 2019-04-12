@@ -1,4 +1,5 @@
 'use strict';
+
 const got = require('got');
 const HttpAgent = require('agentkeepalive');
 const HttpsAgent = HttpAgent.HttpsAgent;
@@ -23,17 +24,15 @@ function api(path, opts) {
     'user-agent': 'adenin Now Assistant Connector, https://www.adenin.com/now-assistant'
   }, opts.headers);
 
-  if (opts.token) {
-    opts.headers.Authorization = `token ${opts.token}`;
-  }
+  if (opts.token) opts.headers.Authorization = `token ${opts.token}`;
 
-  const url = /^http(s)\:\/\/?/.test(path) && opts.endpoint ? path : opts.endpoint + path + `?api_key=${Activity.Context.connector.custom1}`;
+  const url = /^http(s)\:\/\/?/.test(path) && opts.endpoint ?
+    path :
+    opts.endpoint + path + `?api_key=${Activity.Context.connector.custom1}`;
 
-  if (opts.stream) {
-    return got.stream(url, opts);
-  }
+  if (opts.stream) return got.stream(url, opts);
 
-  return got(url, opts).catch(err => {
+  return got(url, opts).catch((err) => {
     throw err;
   });
 }
@@ -47,15 +46,15 @@ const helpers = [
   'delete'
 ];
 
-api.stream = (url, opts) => apigot(url, Object.assign({}, opts, {
+api.stream = (url, opts) => got(url, Object.assign({}, opts, {
   json: false,
   stream: true
 }));
 
 for (const x of helpers) {
   const method = x.toUpperCase();
-  api[x] = (url, opts) => api(url, Object.assign({}, opts, { method }));
-  api.stream[x] = (url, opts) => api.stream(url, Object.assign({}, opts, { method }));
+  api[x] = (url, opts) => api(url, Object.assign({}, opts, {method}));
+  api.stream[x] = (url, opts) => api.stream(url, Object.assign({}, opts, {method}));
 }
 
 module.exports = api;
