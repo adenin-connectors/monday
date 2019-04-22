@@ -28,19 +28,8 @@ function api(path, opts) {
 
   if (opts.token) opts.headers.Authorization = `token ${opts.token}`;
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  const url = /^http(s)\:\/\/?/.test(path) && opts.endpoint ?
-    path :
-    opts.endpoint + path + `?api_key=${Activity.Context.connector.custom1}`;
-=======
-  const url = /^http(s)\:\/\/?/.test(path) && opts.endpoint ? path : opts.endpoint + path +
-    `?api_key=${_activity.Context.connector.custom1}`;
->>>>>>> Stashed changes
-=======
-  const url = /^http(s)\:\/\/?/.test(path) && opts.endpoint ? path : opts.endpoint + path +
-    `?api_key=${_activity.Context.connector.custom1}`;
->>>>>>> Stashed changes
+  const url = /^http(s)\:\/\/?/.test(path) && opts.endpoint ? path :
+    opts.endpoint + path + `?api_key=${_activity.Context.connector.custom1}`;
 
   if (opts.stream) return got.stream(url, opts);
 
@@ -58,26 +47,19 @@ const helpers = [
   'delete'
 ];
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-api.stream = (url, opts) => got(url, Object.assign({}, opts, {
-=======
-=======
->>>>>>> Stashed changes
 api.initialize = (activity) => {
   _activity = activity;
 };
 
-api.stream = (url, opts) => apigot(url, Object.assign({}, opts, {
->>>>>>> Stashed changes
+api.stream = (url, opts) => got(url, Object.assign({}, opts, {
   json: false,
   stream: true
 }));
 
 for (const x of helpers) {
   const method = x.toUpperCase();
-  api[x] = (url, opts) => api(url, Object.assign({}, opts, {method}));
-  api.stream[x] = (url, opts) => api.stream(url, Object.assign({}, opts, {method}));
+  api[x] = (url, opts) => api(url, Object.assign({}, opts, { method }));
+  api.stream[x] = (url, opts) => api.stream(url, Object.assign({}, opts, { method }));
 }
 
 module.exports = api;
