@@ -4,6 +4,8 @@ const got = require('got');
 const HttpAgent = require('agentkeepalive');
 const HttpsAgent = HttpAgent.HttpsAgent;
 
+let _activity = null;
+
 function api(path, opts) {
   if (typeof path !== 'string') {
     return Promise.reject(new TypeError(`Expected \`path\` to be a string, got ${typeof path}`));
@@ -11,7 +13,7 @@ function api(path, opts) {
 
   opts = Object.assign({
     json: true,
-    token: Activity.Context.connector.token,
+    token: _activity.Context.connector.token,
     endpoint: 'https://api.monday.com:443/v1',
     agent: {
       http: new HttpAgent(),
@@ -21,14 +23,24 @@ function api(path, opts) {
 
   opts.headers = Object.assign({
     accept: 'application/json',
-    'user-agent': 'adenin Now Assistant Connector, https://www.adenin.com/now-assistant'
+    'user-agent': 'adenin Digital Assistant Connector, https://www.adenin.com/digital-assistant'
   }, opts.headers);
 
   if (opts.token) opts.headers.Authorization = `token ${opts.token}`;
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
   const url = /^http(s)\:\/\/?/.test(path) && opts.endpoint ?
     path :
     opts.endpoint + path + `?api_key=${Activity.Context.connector.custom1}`;
+=======
+  const url = /^http(s)\:\/\/?/.test(path) && opts.endpoint ? path : opts.endpoint + path +
+    `?api_key=${_activity.Context.connector.custom1}`;
+>>>>>>> Stashed changes
+=======
+  const url = /^http(s)\:\/\/?/.test(path) && opts.endpoint ? path : opts.endpoint + path +
+    `?api_key=${_activity.Context.connector.custom1}`;
+>>>>>>> Stashed changes
 
   if (opts.stream) return got.stream(url, opts);
 
@@ -46,7 +58,18 @@ const helpers = [
   'delete'
 ];
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 api.stream = (url, opts) => got(url, Object.assign({}, opts, {
+=======
+=======
+>>>>>>> Stashed changes
+api.initialize = (activity) => {
+  _activity = activity;
+};
+
+api.stream = (url, opts) => apigot(url, Object.assign({}, opts, {
+>>>>>>> Stashed changes
   json: false,
   stream: true
 }));
